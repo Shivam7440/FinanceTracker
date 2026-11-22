@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Production-grade Full Stack Personal Finance Tracker (Aura Finance)",
   "scripts": {
+    "start": "node backend/src/server.js",
+    "build": "cd backend && npm install",
     "start:backend": "cd backend && npm start",
     "start:frontend": "cd frontend && npm run dev",
     "build:frontend": "cd frontend && npm run build",

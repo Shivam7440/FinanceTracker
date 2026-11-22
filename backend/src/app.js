@@ -9,39 +9,34 @@ import { config } from './config/env.js';
 export function createApp() {
   const app = express();
 
+  // Trust Cloudflare / Render reverse proxy for accurate IP identification & rate limiting
+  app.set('trust proxy', 1);
+
   // Security Headers via Helmet
   app.use(helmet({
     contentSecurityPolicy: false // Allows swagger UI assets
   }));
 
-  // CORS Configuration
-  app.use(cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, postman)
-      if (!origin) return callback(null, true);
-
-      // Allow wildcard or explicit matching origin
-      if (config.clientOrigin === '*' || origin === config.clientOrigin) {
-        return callback(null, true);
-      }
-
-      // Allow comma-separated client origins
-      const allowedOrigins = config.clientOrigin.split(',').map(o => o.trim());
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Allow local development and Vercel preview / production deployments
-      if (origin.startsWith('http://localhost:') || origin.endsWith('.vercel.app')) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS policy violation: origin ${origin} not allowed`));
-    },
+  // CORS Configuration - Permissive for live cloud environments & preview domains
+  const corsOptions = {
+    origin: true, // Automatically reflects request origin (crucial for Vercel preview branches)
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Cache']
-  }));
+  };
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
+
+  // Root endpoint for cloud health checks (Render / Railway / AWS)
+  app.get('/', (req, res) => {
+    res.json({
+      success: true,
+      service: 'Aura Finance REST API Gateway',
+      status: 'operational',
+      health: '/api/health',
+      docs: '/api/docs'
+    });
+  });
 
   // Body Parsing
   app.use(express.json({ limit: '5mb' }));
