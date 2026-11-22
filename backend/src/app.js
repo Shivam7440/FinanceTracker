@@ -17,11 +17,26 @@ export function createApp() {
   // CORS Configuration
   app.use(cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, postman) or matching origin
-      if (!origin || origin === config.clientOrigin || origin.startsWith('http://localhost:')) {
+      // Allow requests with no origin (e.g. mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+
+      // Allow wildcard or explicit matching origin
+      if (config.clientOrigin === '*' || origin === config.clientOrigin) {
         return callback(null, true);
       }
-      return callback(new Error('CORS policy violation'));
+
+      // Allow comma-separated client origins
+      const allowedOrigins = config.clientOrigin.split(',').map(o => o.trim());
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow local development and Vercel preview / production deployments
+      if (origin.startsWith('http://localhost:') || origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS policy violation: origin ${origin} not allowed`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
