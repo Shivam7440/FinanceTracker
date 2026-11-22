@@ -70,12 +70,12 @@ export default function DashboardPage({ onOpenAddTransaction }) {
     const isNetPositive = netVal >= 0;
 
     return {
-      netBalance: `$${Math.abs(netVal).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+      netBalance: `₹${Math.abs(netVal).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
       isNetPositive,
-      inflow: `$${parseFloat(totals.totalIncome || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-      outflow: `$${parseFloat(totals.totalExpenses || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-      monthlyInflow: `$${parseFloat(current.monthlyIncome || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-      monthlySpend: `$${parseFloat(current.monthlyExpense || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+      inflow: `₹${parseFloat(totals.totalIncome || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      outflow: `₹${parseFloat(totals.totalExpenses || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      monthlyInflow: `₹${parseFloat(current.monthlyIncome || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      monthlySpend: `₹${parseFloat(current.monthlyExpense || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
       savingsRate: totals.savingsRate || 0,
       txCount: totals.transactionCount || 0
     };
@@ -321,7 +321,7 @@ export default function DashboardPage({ onOpenAddTransaction }) {
                         fontSize: '0.9rem',
                         color: isIncome ? 'var(--accent-emerald)' : 'var(--text-primary)'
                       }}>
-                        {isIncome ? '+' : '-'}${parseFloat(tx.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {isIncome ? '+' : '-'}₹{parseFloat(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </div>
@@ -365,7 +365,7 @@ export default function DashboardPage({ onOpenAddTransaction }) {
               Unused Figma Seat & Redundant Cloud Compute Detected
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              3 consecutive billing cycles with 0 design editor activity. Potential recurring savings of <strong style={{ color: 'var(--accent-emerald)' }}>$45.00/mo</strong> instantly.
+              3 consecutive billing cycles with 0 design editor activity. Potential recurring savings of <strong style={{ color: 'var(--accent-emerald)' }}>₹3,750/mo</strong> instantly.
             </div>
           </div>
         </div>

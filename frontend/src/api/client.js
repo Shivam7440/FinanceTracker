@@ -57,7 +57,9 @@ export async function apiRequest(endpoint, options = {}) {
 export const authApi = {
   login: (credentials) => apiRequest('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
   register: (payload) => apiRequest('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
-  getMe: () => apiRequest('/auth/me')
+  getMe: () => apiRequest('/auth/me'),
+  updateProfile: (payload) => apiRequest('/auth/profile', { method: 'PUT', body: JSON.stringify(payload) }),
+  changePassword: (payload) => apiRequest('/auth/change-password', { method: 'PUT', body: JSON.stringify(payload) })
 };
 
 // Categories API

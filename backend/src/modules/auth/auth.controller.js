@@ -150,7 +150,7 @@ export async function login(req, res, next) {
 export async function getMe(req, res, next) {
   try {
     const result = await query(
-      'SELECT id, name, email, role, created_at FROM users WHERE id = $1;',
+      'SELECT id, name, email, role, avatar_url, phone, bio, created_at, updated_at FROM users WHERE id = $1;',
       [req.user.id]
     );
 
@@ -164,6 +164,159 @@ export async function getMe(req, res, next) {
     res.status(200).json({
       success: true,
       user: result.rows[0]
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateProfile(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const { name, email, phone, bio, avatar_url } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Name cannot be empty.'
+      });
+    }
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email cannot be empty.'
+      });
+    }
+
+    const emailTrimmed = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTrimmed)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address.'
+      });
+    }
+
+    // Check if another user already uses this email
+    const duplicateCheck = await query(
+      'SELECT id FROM users WHERE lower(email) = lower($1) AND id != $2;',
+      [emailTrimmed, userId]
+    );
+    if (duplicateCheck.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        error: 'Another account with this email address already exists.'
+      });
+    }
+
+    const updateSql = `
+      UPDATE users
+      SET 
+        name = $1,
+        email = $2,
+        phone = $3,
+        bio = $4,
+        avatar_url = $5,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $6
+      RETURNING id, name, email, role, avatar_url, phone, bio, created_at, updated_at;
+    `;
+
+    const result = await query(updateSql, [
+      name.trim(),
+      emailTrimmed,
+      phone !== undefined ? (phone ? phone.trim() : null) : null,
+      bio !== undefined ? (bio ? bio.trim() : null) : null,
+      avatar_url !== undefined ? avatar_url : null,
+      userId
+    ]);
+
+    const updatedUser = result.rows[0];
+
+    // Generate fresh JWT token
+    const token = jwt.sign(
+      {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        role: updatedUser.role
+      },
+      config.jwtSecret,
+      { expiresIn: config.jwtExpiresIn }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully.',
+      token,
+      user: updatedUser
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function changePassword(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'Current password and new password are required.'
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        error: 'New password must be at least 6 characters long.'
+      });
+    }
+
+    if (confirmPassword && newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'New password and confirmation do not match.'
+      });
+    }
+
+    // Verify current password
+    const userResult = await query(
+      'SELECT id, password_hash FROM users WHERE id = $1;',
+      [userId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User account not found.'
+      });
+    }
+
+    const user = userResult.rows[0];
+    const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        error: 'Current password is incorrect.'
+      });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+    await query(
+      'UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2;',
+      [newPasswordHash, userId]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully.'
     });
   } catch (error) {
     next(error);

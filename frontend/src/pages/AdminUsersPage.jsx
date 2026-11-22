@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
                       {u.stats?.transactionCount || 0}
                     </span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>
-                      ${parseFloat(u.stats?.totalExpense || 0).toLocaleString()} outlays
+                      ₹{parseFloat(u.stats?.totalExpense || 0).toLocaleString('en-IN')} outlays
                     </span>
                   </td>
                   <td style={{ textAlign: 'right' }}>

@@ -84,9 +84,9 @@ export default function AnalyticsPage() {
     const net = parseFloat(totals.netBalance || 0);
 
     return {
-      income: `$${parseFloat(totals.totalIncome || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-      expenses: `$${parseFloat(totals.totalExpenses || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-      net: `$${Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+      income: `₹${parseFloat(totals.totalIncome || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      expenses: `₹${parseFloat(totals.totalExpenses || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      net: `₹${Math.abs(net).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
       isPositive: net >= 0,
       savingsRate: totals.savingsRate || 0,
       txCount: totals.transactionCount || 0

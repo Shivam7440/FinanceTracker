@@ -434,7 +434,7 @@ export default function TransactionsPage({ onOpenAddTransaction }) {
                         fontSize: '0.95rem',
                         color: isIncome ? 'var(--accent-emerald)' : 'var(--text-primary)'
                       }}>
-                        {isIncome ? '+' : '-'}${parseFloat(tx.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        {isIncome ? '+' : '-'}₹{parseFloat(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>

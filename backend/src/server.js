@@ -45,6 +45,20 @@ async function startServer() {
       });
     });
 
+    // Prevent server crashes on transient connection errors (e.g. idle socket drops)
+    process.on('unhandledRejection', (reason, promise) => {
+      console.warn('Unhandled Rejection at:', promise, 'reason:', reason);
+    });
+
+    process.on('uncaughtException', (err) => {
+      console.error('Uncaught Exception caught:', err.message);
+      if (err.code === 'EADDRNOTAVAIL' || err.code === 'ECONNRESET') {
+        console.warn('Network socket dropped; server continuing.');
+      } else {
+        console.error(err);
+      }
+    });
+
     return server;
   } catch (error) {
     console.error('Fatal server startup error:', error);

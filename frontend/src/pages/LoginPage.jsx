@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Wallet, Lock, Mail, ArrowRight, Shield, User, EyeOff, Loader2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Shield, User, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useToast } from '../components/Toast.jsx';
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       addToast('Authenticated successfully', 'success');
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed. Please verify credentials.');
     } finally {
@@ -39,7 +39,7 @@ export default function LoginPage() {
     try {
       await login(demoEmail, demoPass);
       addToast(`Signed in as ${demoEmail.split('@')[0]}`, 'success');
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Demo login failed');
     } finally {
@@ -60,17 +60,26 @@ export default function LoginPage() {
         {/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)',
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            overflow: 'hidden',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 25px rgba(6, 182, 212, 0.4)',
+            boxShadow: '0 0 25px rgba(6, 182, 212, 0.3)',
             marginBottom: '16px'
           }}>
-            <Wallet size={26} color="#FFFFFF" />
+            <img
+              src="/aura-finance-icon.png"
+              alt="Aura Finance Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                display: 'block'
+              }}
+            />
           </div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Aura <span style={{ color: 'var(--accent-cyan)' }}>Finance</span>

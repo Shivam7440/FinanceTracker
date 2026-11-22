@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -9,7 +9,7 @@ import {
   LogOut,
   Shield,
   Lock,
-  Wallet
+  Globe
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, onClose }) {
   };
 
   const navItems = [
-    { to: '/', label: 'Overview Dashboard', icon: LayoutDashboard },
+    { to: '/dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
     { to: '/transactions', label: 'Transactions & Cash Flow', icon: ArrowLeftRight },
     { to: '/analytics', label: 'Budgets & Analytics', icon: PieChart },
     ...(isAdmin ? [{ to: '/admin/users', label: 'Admin User Management', icon: Users }] : []),
@@ -46,18 +46,28 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         {/* Brand Header */}
-        <div style={{ padding: '24px 24px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Link to="/dashboard" onClick={onClose} style={{ padding: '24px 24px 16px', display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <div style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)'
+            flexShrink: 0,
+            boxShadow: '0 0 15px rgba(6, 182, 212, 0.25)'
           }}>
-            <Wallet size={20} color="#FFFFFF" />
+            <img
+              src="/aura-finance-icon.png"
+              alt="Aura Finance Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                display: 'block'
+              }}
+            />
           </div>
           <div>
             <div style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
@@ -67,7 +77,7 @@ export default function Sidebar({ isOpen, onClose }) {
               Institutional Wealth
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Role Badge Indicator */}
         <div style={{ padding: '0 24px 16px' }}>
@@ -96,22 +106,9 @@ export default function Sidebar({ isOpen, onClose }) {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/'}
+                end={item.to === '/dashboard'}
                 onClick={onClose}
-                style={({ isActive }) => ({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '12px 14px',
-                  borderRadius: 'var(--radius-md)',
-                  color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
-                  backgroundColor: isActive ? 'rgba(6, 182, 212, 0.12)' : 'transparent',
-                  border: isActive ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.875rem',
-                  textDecoration: 'none',
-                  transition: 'all 0.15s ease'
-                })}
+                className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
               >
                 <Icon size={18} />
                 <span>{item.label}</span>
@@ -139,6 +136,25 @@ export default function Sidebar({ isOpen, onClose }) {
             <LogOut size={14} />
             <span>Sign Out</span>
           </button>
+
+          <Link
+            to="/"
+            onClick={onClose}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              marginTop: '10px',
+              fontSize: '0.75rem',
+              color: 'var(--text-muted)',
+              textDecoration: 'none',
+              transition: 'color 0.15s ease'
+            }}
+          >
+            <Globe size={12} />
+            <span>View Public Landing Page</span>
+          </Link>
         </div>
       </aside>
     </>

@@ -52,7 +52,7 @@ export default function TransactionDetailsModal({ isOpen, onClose, transaction }
               gap: '6px'
             }}>
               {isIncome ? <ArrowUpRight size={24} color="var(--accent-emerald)" /> : <ArrowDownRight size={24} color="var(--accent-rose)" />}
-              <span>{isIncome ? '+' : '-'}${parseFloat(transaction.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+              <span>{isIncome ? '+' : '-'}₹{parseFloat(transaction.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
             </div>
             <div style={{ marginTop: '8px' }}>
               <span className={`badge badge-${transaction.type}`}>

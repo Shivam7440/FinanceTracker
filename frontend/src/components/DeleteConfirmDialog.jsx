@@ -45,7 +45,7 @@ export default function DeleteConfirmDialog({ isOpen, onClose, onConfirm, transa
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
               <span>{transaction.category_name}</span>
               <span className="tabular-nums" style={{ fontWeight: 700, color: transaction.type === 'income' ? 'var(--accent-emerald)' : 'var(--text-primary)' }}>
-                ${parseFloat(transaction.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                ₹{parseFloat(transaction.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </div>

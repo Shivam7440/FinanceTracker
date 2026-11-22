@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Settings as SettingsIcon,
@@ -10,17 +10,26 @@ import {
   Lock,
   LogOut,
   Database,
-  ExternalLink
+  ExternalLink,
+  Edit3
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useTheme } from '../contexts/ThemeContext.jsx';
 import { useToast } from '../components/Toast.jsx';
+import ProfileModal from '../components/ProfileModal.jsx';
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState('profile');
+
+  const handleOpenProfileModal = (tab) => {
+    setModalTab(tab);
+    setIsProfileModalOpen(true);
+  };
 
   const handleSignOut = () => {
     logout();
@@ -51,9 +60,52 @@ export default function SettingsPage() {
 
       {/* User Profile Card */}
       <div className="card">
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '16px' }}>
-          Identity & Access Credentials
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            Identity & Access Credentials
+          </h3>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => handleOpenProfileModal('profile')}
+              className="btn btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+            >
+              <Edit3 size={14} />
+              <span>Edit Profile</span>
+            </button>
+            <button
+              onClick={() => handleOpenProfileModal('security')}
+              className="btn btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+            >
+              <Lock size={14} />
+              <span>Change Password</span>
+            </button>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
+          <div className="topbar-profile-avatar" style={{ width: '56px', height: '56px', fontSize: '1.4rem' }}>
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt={user?.name || 'User'} />
+            ) : (
+              user?.name ? user.name.charAt(0).toUpperCase() : 'U'
+            )}
+          </div>
+          <div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              {user?.name || 'Aura Member'}
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              {user?.email || 'N/A'}
+            </div>
+            {user?.bio && (
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px', fontStyle: 'italic' }}>
+                "{user.bio}"
+              </div>
+            )}
+          </div>
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
           <div>
@@ -67,6 +119,13 @@ export default function SettingsPage() {
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Registered Email</span>
             <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem', marginTop: '4px' }}>
               {user?.email || 'N/A'}
+            </div>
+          </div>
+
+          <div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Contact Phone</span>
+            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem', marginTop: '4px' }}>
+              {user?.phone || 'Not configured'}
             </div>
           </div>
 
@@ -176,6 +235,13 @@ export default function SettingsPage() {
           <span>Sign Out of Aura Finance</span>
         </button>
       </div>
+
+      {/* Profile & Account Management Modal */}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        initialTab={modalTab}
+      />
     </div>
   );
 }

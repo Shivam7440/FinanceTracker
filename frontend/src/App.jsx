@@ -9,6 +9,7 @@ import LoadingFallback from './components/LoadingFallback.jsx';
 import TransactionModal from './components/TransactionModal.jsx';
 
 // Lazy-loaded pages (Assignment requirement for route-based code splitting)
+const LandingPage = lazy(() => import('./pages/LandingPage.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage.jsx'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage.jsx'));
@@ -75,7 +76,7 @@ function AppLayout() {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route
-                path="/"
+                path="/dashboard"
                 element={
                   <DashboardPage
                     key={refreshTrigger}
@@ -102,7 +103,7 @@ function AppLayout() {
                 }
               />
               <Route path="/settings" element={<SettingsPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </Suspense>
         </main>
@@ -126,6 +127,7 @@ export default function App() {
           <ToastProvider>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route

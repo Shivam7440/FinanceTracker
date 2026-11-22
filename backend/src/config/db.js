@@ -20,8 +20,17 @@ export async function initDatabase() {
       console.log('Connecting to PostgreSQL via DATABASE_URL...');
       const pool = new pg.Pool({
         connectionString: config.databaseUrl,
-        ssl: config.databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+        ssl: config.databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false },
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
+        max: 10
       });
+
+      // Handle unexpected idle client errors (prevents crash on pooler socket drop)
+      pool.on('error', (err) => {
+        console.warn('PostgreSQL pool idle client warning (handled):', err.message);
+      });
+
       // Test connection
       await pool.query('SELECT 1;');
       console.log('Successfully connected to external PostgreSQL database.');

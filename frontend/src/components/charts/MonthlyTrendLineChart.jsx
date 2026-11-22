@@ -95,7 +95,7 @@ export default function MonthlyTrendLineChart({ trendsData = [] }) {
           callbacks: {
             label: (ctx) => {
               const val = ctx.raw || 0;
-              return ` ${ctx.dataset.label}: $${val.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+              return ` ${ctx.dataset.label}: ₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
             }
           }
         }
@@ -110,7 +110,7 @@ export default function MonthlyTrendLineChart({ trendsData = [] }) {
           ticks: {
             color: '#64748B',
             font: { family: 'JetBrains Mono', size: 10 },
-            callback: (val) => `$${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`
+            callback: (val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`
           }
         }
       }

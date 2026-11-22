@@ -1,11 +1,13 @@
 import rateLimit from 'express-rate-limit';
 
+const isDev = process.env.NODE_ENV === 'development';
 const isTest = process.env.NODE_ENV === 'test';
+const isRelaxed = isDev || isTest;
 
 // Auth: 5 requests per 15 minutes
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: isTest ? 1000 : 5,
+  max: isRelaxed ? 1000 : 5,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -18,7 +20,7 @@ export const authLimiter = rateLimit({
 // Transactions: 100 requests per hour
 export const transactionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: isTest ? 10000 : 100,
+  max: isRelaxed ? 10000 : 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -31,7 +33,7 @@ export const transactionLimiter = rateLimit({
 // Analytics: 50 requests per hour
 export const analyticsLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: isTest ? 10000 : 50,
+  max: isRelaxed ? 10000 : 50,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

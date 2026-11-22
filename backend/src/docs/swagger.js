@@ -34,6 +34,9 @@ export const swaggerSpec = {
           name: { type: 'string', example: 'Alex Rostova' },
           email: { type: 'string', format: 'email', example: 'alex@aurafinance.io' },
           role: { type: 'string', enum: ['admin', 'user', 'read-only'], example: 'user' },
+          avatar_url: { type: 'string', nullable: true, example: null },
+          phone: { type: 'string', nullable: true, example: '+91 98765 43210' },
+          bio: { type: 'string', nullable: true, example: 'Fintech operator and wealth builder' },
           createdAt: { type: 'string', format: 'date-time' }
         }
       },

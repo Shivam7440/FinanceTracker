@@ -216,11 +216,11 @@ export default function TransactionModal({ isOpen, onClose, transactionToEdit, o
           {/* Amount Input */}
           <div>
             <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase' }}>
-              Amount ($ USD) *
+              Amount (₹ INR) *
             </label>
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontWeight: 600 }}>
-                $
+                ₹
               </span>
               <input
                 type="number"
